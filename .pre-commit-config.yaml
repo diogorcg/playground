@@ -20,3 +20,8 @@ repos:
       args: ["clean"]
       language: system
       pass_filenames: false
+    #- id: nb-to-python
+    #  name: nb-to-python
+    #  entry: make
+    #  args: [ "nb-to-python" ]
+    #  language: system
