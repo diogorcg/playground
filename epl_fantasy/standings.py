@@ -1,7 +1,6 @@
 import pandas as pd
-
-from epl_fantasy.fantasy_cls import Gameweek, Standings, TeamStandingsInfo
-from epl_fantasy.teams import Teams
+from fantasy_cls import Gameweek, Standings, TeamStandingsInfo
+from teams import Teams
 
 
 def get_standings_table(standings: Standings) -> pd.DataFrame:
