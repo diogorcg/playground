@@ -12,7 +12,7 @@ class FirstRoundInfo:
 
 @dataclass
 class Team:
-    player_name: str
+    manager_name: str
     team_name: str
     first_round_info: FirstRoundInfo
 
@@ -30,7 +30,7 @@ class Gameweek:
 
 
 @dataclass
-class TeamStandingInfo:
+class TeamStandingsInfo:
     team: Team
     wins: int = None
     draws: int = None
@@ -47,15 +47,29 @@ class TeamStandingInfo:
 
 
 @dataclass
-class Standing:
+class Standings:
     most_recent_gw_number: int = None
-    teams_standing_info: List[TeamStandingInfo] = None
+    teams_standings_info: List[TeamStandingsInfo] = None
 
-    def get_team_standing_info_by_name(
+    def __post_init__(self):
+        if self.teams_standings_info is None or (
+            len(self.teams_standings_info) == 0
+        ):
+            return
+        self.order_standing()
+
+    def get_team_standings_info_by_name(
         self, team_name: str
-    ) -> Optional[TeamStandingInfo]:
-        for team_standing_info in self.teams_standing_info:
-            if team_standing_info.team.team_name == team_name:
-                return team_standing_info
+    ) -> Optional[TeamStandingsInfo]:
+        for team_standings_info in self.teams_standings_info:
+            if team_standings_info.team.team_name == team_name:
+                return team_standings_info
 
         return None
+
+    def order_standing(self):
+        self.teams_standings_info = sorted(
+            self.teams_standings_info,
+            key=lambda team_standings_info: team_standings_info.points,
+            reverse=True,
+        )

@@ -55,42 +55,42 @@ class FirstRoundInfoTeams(ExtendedEnum):
 
 class Teams(ExtendedEnum):
     AL_NASSR = Team(
-        player_name="João Meneses",
+        manager_name="João Meneses",
         team_name="Al-Nassr",
         first_round_info=FirstRoundInfoTeams.AL_NASSR.value,
     )
     CHORA_BEBE = Team(
-        player_name="Miguel Meneses",
+        manager_name="Miguel Meneses",
         team_name="Chora Bebé",
         first_round_info=FirstRoundInfoTeams.CHORA_BEBE.value,
     )
     DRAFT_V3 = Team(
-        player_name="Pedro Ribeiro",
+        manager_name="Pedro Ribeiro",
         team_name="Draft v3",
         first_round_info=FirstRoundInfoTeams.DRAFT_V3.value,
     )
     GYO_GT_HAALAND = Team(
-        player_name="Nuno Ribeiro",
+        manager_name="Nuno Ribeiro",
         team_name="Gyo>haaland",
         first_round_info=FirstRoundInfoTeams.GYO_GT_HAALAND.value,
     )
     LIGA_SABSEG_FTW = Team(
-        player_name="José Alves",
+        manager_name="José Alves",
         team_name="Liga SabSeg FTW",
         first_round_info=FirstRoundInfoTeams.LIGA_SABSEG_FTW.value,
     )
     PAULINHO_FC = Team(
-        player_name="Pedro Gonçalves",
+        manager_name="Pedro Gonçalves",
         team_name="Paulinho FC",
         first_round_info=FirstRoundInfoTeams.PAULINHO_FC.value,
     )
     VOLTA_CRIS = Team(
-        player_name="Diogo Gonçalves",
+        manager_name="Diogo Gonçalves",
         team_name="Volta Cris",
         first_round_info=FirstRoundInfoTeams.VOLTA_CRIS.value,
     )
     ZE_MAIA_GT_BINO = Team(
-        player_name="José Maia",
+        manager_name="José Maia",
         team_name="Zé Maia > Bino",
         first_round_info=FirstRoundInfoTeams.ZE_MAIA_GT_BINO.value,
     )
