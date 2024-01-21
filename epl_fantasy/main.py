@@ -1,7 +1,6 @@
 import typer
 from gameweeks import Gameweeks
-
-from epl_fantasy.standings import initialize_standings, update_standings
+from standings import initialize_standings, update_standings
 
 app = typer.Typer()
 
@@ -14,8 +13,3 @@ def get_standings():
         standing = update_standings(gameweek=gameweek, standings=standing)
 
     return standing
-
-
-if __name__ == "__main__":
-    gg = get_standings()
-    print(1)
