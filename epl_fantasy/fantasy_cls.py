@@ -70,6 +70,9 @@ class Standings:
     def order_standing(self):
         self.teams_standings_info = sorted(
             self.teams_standings_info,
-            key=lambda team_standings_info: team_standings_info.points,
+            key=lambda team_standings_info: (
+                team_standings_info.points,
+                team_standings_info.points_scored,
+            ),
             reverse=True,
         )
