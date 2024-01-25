@@ -4,7 +4,7 @@ from standings import get_standings_table
 
 standings = get_standings()
 
-latest_processed_gameweek = standings.most_recent_gw_number
+latest_processed_gameweek = min(21, standings.most_recent_gw_number)
 standings_df = get_standings_table(standings)
 
 

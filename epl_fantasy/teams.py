@@ -4,52 +4,68 @@ from utils import ExtendedEnum
 
 class FirstRoundInfoTeams(ExtendedEnum):
     AL_NASSR = FirstRoundInfo(
-        wins=10,
-        draws=0,
-        losses=7,
-        points_scored=606,
+        matches_won=11,
+        matches_drawn=0,
+        matches_lost=7,
+        points_for=661,
+        total=33,
+        points_against=663,
     )
     CHORA_BEBE = FirstRoundInfo(
-        wins=6,
-        draws=1,
-        losses=10,
-        points_scored=710,
+        matches_won=7,
+        matches_drawn=1,
+        matches_lost=10,
+        points_for=779,
+        points_against=784,
+        total=22,
     )
     DRAFT_V3 = FirstRoundInfo(
-        wins=13,
-        draws=1,
-        losses=3,
-        points_scored=881,
+        matches_won=13,
+        matches_drawn=1,
+        matches_lost=4,
+        points_for=909,
+        points_against=632,
+        total=40,
     )
     GYO_GT_HAALAND = FirstRoundInfo(
-        wins=9,
-        draws=0,
-        losses=8,
-        points_scored=616,
+        matches_won=9,
+        matches_drawn=0,
+        matches_lost=9,
+        points_for=667,
+        total=27,
+        points_against=689,
     )
     LIGA_SABSEG_FTW = FirstRoundInfo(
-        wins=7,
-        draws=1,
-        losses=9,
-        points_scored=669,
+        matches_won=8,
+        matches_drawn=1,
+        matches_lost=9,
+        points_for=699,
+        points_against=762,
+        total=25,
     )
     PAULINHO_FC = FirstRoundInfo(
-        wins=4,
-        draws=0,
-        losses=13,
-        points_scored=684,
+        matches_won=5,
+        matches_drawn=0,
+        matches_lost=13,
+        points_for=755,
+        points_against=898,
+        total=15,
     )
     VOLTA_CRIS = FirstRoundInfo(
-        wins=8,
-        draws=1,
-        losses=8,
-        points_scored=643,
+        matches_won=8,
+        matches_drawn=1,
+        matches_lost=9,
+        points_for=699,
+        points_against=763,
+        total=25,
     )
     ZE_MAIA_GT_BINO = FirstRoundInfo(
-        wins=9,
-        draws=0,
-        losses=8,
-        points_scored=770,
+        matches_won=9,
+        matches_drawn=0,
+        matches_lost=9,
+        points_for=807,
+        total=27,
+        points_against=785,
     )
 
 
