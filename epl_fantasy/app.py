@@ -14,6 +14,7 @@ st.title("Here we go Standings")
 
 st.markdown(f"Latest gameweek processed: **{latest_processed_gameweek}**")
 
+st.image('epl_fantasy/resources/bino_vs_gu.jpg')
 
 # Center the table elements using HTML & CSS
 df_html = standings_df.to_html(
