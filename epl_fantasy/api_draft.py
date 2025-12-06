@@ -4,7 +4,7 @@ import requests
 
 def get_league_standings():
     league_info = requests.get(
-        "https://draft.premierleague.com/api/league/231832/details"
+        "https://draft.premierleague.com/api/league/623523/details"
     ).json()
 
     standings = pd.DataFrame(league_info["standings"])
