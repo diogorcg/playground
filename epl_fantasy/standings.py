@@ -1,6 +1,5 @@
 import pandas as pd
-from fantasy_cls import Standings, TeamStandingsInfo
-from teams import Teams
+from fantasy_cls import Standings, Team, TeamStandingsInfo
 
 
 def get_standings_table(standings: Standings) -> pd.DataFrame:
@@ -10,8 +9,7 @@ def get_standings_table(standings: Standings) -> pd.DataFrame:
     for rank, standing in enumerate(standings.teams_standings_info, start=1):
         record = {
             "Rank": rank,
-            "1st Team Name": standing.team.team_name,
-            "2nd Team Name": standing.team.second_team_name,
+            "Team Name": standing.team.team_name,
             "Manager": standing.team.manager_name,
             "W": standing.matches_won,
             "D": standing.matches_drawn,
@@ -26,43 +24,35 @@ def get_standings_table(standings: Standings) -> pd.DataFrame:
     return df
 
 
-def initialize_standings() -> Standings:
-    teams_standings_info = [
-        TeamStandingsInfo(team=team) for team in Teams.list()
-    ]
-    return Standings(teams_standings_info=teams_standings_info)
+def build_standings_from_api_data(
+    standings_df: pd.DataFrame, last_gameweek_processed: int
+) -> Standings:
+    """Create standings using the Draft API payload only."""
 
+    def _safe_int(value) -> int:
+        if pd.isna(value):
+            return 0
+        return int(value)
 
-def update_standings(gameweek, standings: Standings) -> Standings:
-    standings.most_recent_gw_number = gameweek.number
-    for fixture in gameweek.fixtures:
-        home_team_points = fixture.home_team[1]
-        away_team_points = fixture.away_team[1]
-        if home_team_points is None or away_team_points is None:
-            continue
-
-        home_team_standings_info = standings.get_team_standings_info_by_name(
-            fixture.home_team[0].team_name
+    teams_standings_info = []
+    for _, row in standings_df.iterrows():
+        team = Team(
+            manager_name=row.get("manager_name", ""),
+            team_name=row.get("entry_name", ""),
         )
-        away_team_standings_info = standings.get_team_standings_info_by_name(
-            fixture.away_team[0].team_name
+        teams_standings_info.append(
+            TeamStandingsInfo(
+                team=team,
+                matches_won=_safe_int(row.get("matches_won")),
+                matches_drawn=_safe_int(row.get("matches_drawn")),
+                matches_lost=_safe_int(row.get("matches_lost")),
+                total=_safe_int(row.get("total")),
+                points_for=_safe_int(row.get("points_for")),
+                points_against=_safe_int(row.get("points_against")),
+            )
         )
-        home_team_standings_info.points_for += home_team_points
-        away_team_standings_info.points_for += away_team_points
 
-        if home_team_points > away_team_points:
-            home_team_standings_info.matches_won += 1
-            home_team_standings_info.total += 3
-            away_team_standings_info.matches_lost += 1
-        elif home_team_points < away_team_points:
-            away_team_standings_info.matches_won += 1
-            away_team_standings_info.total += 3
-            home_team_standings_info.matches_lost += 1
-        else:
-            away_team_standings_info.matches_drawn += 1
-            away_team_standings_info.total += 1
-            home_team_standings_info.matches_drawn += 1
-            home_team_standings_info.total += 1
-
-    standings.order_standing()
-    return standings
+    return Standings(
+        most_recent_gw_number=last_gameweek_processed,
+        teams_standings_info=teams_standings_info,
+    )

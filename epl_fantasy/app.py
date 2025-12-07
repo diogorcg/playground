@@ -4,15 +4,12 @@ from standings import get_standings_table
 
 standings = get_standings()
 
-latest_processed_gameweek = min(21, standings.most_recent_gw_number)
 standings_df = get_standings_table(standings)
 
 
 st.set_page_config(page_title="EPL Fantasy Here-we-go")
 
 st.title("Here we go Standings")
-
-st.markdown(f"Latest gameweek processed: **{latest_processed_gameweek}**")
 
 # Center the table elements using HTML & CSS
 df_html = standings_df.to_html(

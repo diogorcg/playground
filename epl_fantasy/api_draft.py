@@ -29,3 +29,6 @@ def get_league_standings():
     )
 
     return standings, last_gamweek_processed
+
+if __name__ == '__main__':
+    get_league_standings()
