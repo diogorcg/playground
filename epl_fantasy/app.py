@@ -7,9 +7,9 @@ standings = get_standings()
 standings_df = get_standings_table(standings)
 
 
-st.set_page_config(page_title="EPL Fantasy Here-we-go")
+st.set_page_config(page_title="EPL Fantasy Mamar é vida")
 
-st.title("Here we go Standings")
+st.title("Mamar é vida Standings")
 
 # Center the table elements using HTML & CSS
 df_html = standings_df.to_html(
