@@ -30,7 +30,7 @@ setup(
     description="Diogo's playground",
     author="Diogo Gonçalves",
     author_email="diogorcgoncalves@gmail.com",
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     long_description=long_description,
     packages=find_packages(exclude=("tests", "resources")),
     install_requires=locked_requirements,

@@ -13,7 +13,7 @@ help:
 
 
 venv:
-	python3 -m venv venv
+	python3.10 -m venv venv
 	source venv/bin/activate && \
 	python -m pip install --upgrade pip setuptools wheel pipenv && \
 	python -m pipenv install --dev && \
