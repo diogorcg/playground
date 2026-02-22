@@ -1,14 +1,17 @@
+import altair as alt
 import pandas as pd
 import streamlit as st
 from api_draft import get_matches_and_entries
 from main import get_standings
-from standings import get_head_to_head_table, get_standings_table
+from standings import get_head_to_head_table, get_rank_evolution, get_recent_form, get_standings_table
 
 standings = get_standings()
 standings_df = get_standings_table(standings)
 
 matches, league_entries = get_matches_and_entries()
 h2h_df = get_head_to_head_table(matches, league_entries)
+recent_form = get_recent_form(matches, league_entries)
+rank_evolution_df = get_rank_evolution(matches, league_entries)
 
 
 st.set_page_config(page_title="EPL Fantasy Mamar é vida", layout="wide")
@@ -41,7 +44,16 @@ table {
 </style>
 """
 
-header_cells = "".join(f"<th>{col}</th>" for col in standings_df.columns)
+FORM_COLORS = {"W": "#28a745", "D": "#e0a800", "L": "#dc3545"}
+
+def form_badges(results):
+    badges = ""
+    for r in results:
+        color = FORM_COLORS.get(r, "#6c757d")
+        badges += f'<span style="background:{color};color:white;border-radius:3px;padding:1px 5px;margin:1px;font-size:11px;font-weight:bold;">{r}</span>'
+    return badges
+
+header_cells = "".join(f"<th>{col}</th>" for col in standings_df.columns) + "<th>Forma</th>"
 standings_rows = ""
 for rank, (_, row) in enumerate(standings_df.iterrows(), start=1):
     color = ROW_COLORS.get(rank, "")
@@ -49,6 +61,8 @@ for rank, (_, row) in enumerate(standings_df.iterrows(), start=1):
     standings_rows += f"<tr{style}>"
     for val in row:
         standings_rows += f"<td>{val}</td>"
+    form = recent_form.get(row["Team Name"], [])
+    standings_rows += f"<td>{form_badges(form)}</td>"
     standings_rows += "</tr>"
 
 standings_html = f"""
@@ -90,3 +104,24 @@ h2h_html = f"""
 """
 
 st.markdown(table_css + h2h_html, unsafe_allow_html=True)
+
+# Rank evolution chart
+st.markdown("<h3 style='text-align: center;'>Standings Evolution</h3>", unsafe_allow_html=True)
+
+n_teams = rank_evolution_df["Rank"].max()
+n_gameweeks = rank_evolution_df["Gameweek"].nunique()
+chart_width = max(900, n_gameweeks * 55)
+
+chart = (
+    alt.Chart(rank_evolution_df)
+    .mark_line(point=True)
+    .encode(
+        x=alt.X("Gameweek:O", title="Gameweek"),
+        y=alt.Y("Rank:Q", title="Position", scale=alt.Scale(domain=[n_teams, 1], nice=False), axis=alt.Axis(tickMinStep=1)),
+        color=alt.Color("Team:N", title="Team"),
+        tooltip=["Team", "Gameweek", "Rank"],
+    )
+    .properties(width=chart_width, height=400)
+)
+
+st.altair_chart(chart)

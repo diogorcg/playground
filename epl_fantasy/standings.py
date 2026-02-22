@@ -83,6 +83,76 @@ def get_head_to_head_table(matches: pd.DataFrame, league_entries: pd.DataFrame) 
     return pd.DataFrame(data)
 
 
+def get_recent_form(matches: pd.DataFrame, league_entries: pd.DataFrame, n: int = 5) -> dict:
+    id_to_name = dict(zip(league_entries["id"], league_entries["entry_name"]))
+    team_names = list(league_entries["entry_name"])
+
+    finished = matches[matches["finished"].astype(bool)].sort_values("event")
+    form = {team: [] for team in team_names}
+
+    for _, match in finished.iterrows():
+        t1 = id_to_name.get(match["league_entry_1"])
+        t2 = id_to_name.get(match["league_entry_2"])
+        if t1 is None or t2 is None:
+            continue
+
+        p1 = match["league_entry_1_points"]
+        p2 = match["league_entry_2_points"]
+
+        if p1 > p2:
+            form[t1].append("W")
+            form[t2].append("L")
+        elif p2 > p1:
+            form[t2].append("W")
+            form[t1].append("L")
+        else:
+            form[t1].append("D")
+            form[t2].append("D")
+
+    return {team: results[-n:] for team, results in form.items()}
+
+
+def get_rank_evolution(matches: pd.DataFrame, league_entries: pd.DataFrame) -> pd.DataFrame:
+    id_to_name = dict(zip(league_entries["id"], league_entries["entry_name"]))
+    team_names = list(league_entries["entry_name"])
+
+    finished = matches[matches["finished"].astype(bool)].sort_values("event")
+    all_gws = sorted(finished["event"].unique())
+
+    # Accumulate league pts and fantasy pts per team per gameweek
+    league_pts = {team: 0 for team in team_names}
+    fantasy_pts = {team: 0 for team in team_names}
+
+    data = []
+    for gw in all_gws:
+        gw_matches = finished[finished["event"] == gw]
+        for _, match in gw_matches.iterrows():
+            t1 = id_to_name.get(match["league_entry_1"])
+            t2 = id_to_name.get(match["league_entry_2"])
+            if t1 is None or t2 is None:
+                continue
+
+            p1 = match["league_entry_1_points"]
+            p2 = match["league_entry_2_points"]
+            fantasy_pts[t1] += p1
+            fantasy_pts[t2] += p2
+
+            if p1 > p2:
+                league_pts[t1] += 3
+            elif p2 > p1:
+                league_pts[t2] += 3
+            else:
+                league_pts[t1] += 1
+                league_pts[t2] += 1
+
+        # Rank teams at this gameweek
+        ranked = sorted(team_names, key=lambda t: (league_pts[t], fantasy_pts[t]), reverse=True)
+        for rank, team in enumerate(ranked, start=1):
+            data.append({"Team": team, "Gameweek": gw, "Rank": rank})
+
+    return pd.DataFrame(data)
+
+
 def build_standings_from_api_data(
     standings_df: pd.DataFrame, last_gameweek_processed: int
 ) -> Standings:
