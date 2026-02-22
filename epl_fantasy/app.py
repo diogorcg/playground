@@ -118,7 +118,7 @@ chart = (
     .encode(
         x=alt.X("Gameweek:O", title="Gameweek"),
         y=alt.Y("Rank:Q", title="Position", scale=alt.Scale(domain=[n_teams, 1], nice=False), axis=alt.Axis(tickMinStep=1)),
-        color=alt.Color("Team:N", title="Team"),
+        color=alt.Color("Team:N", title="Team", legend=alt.Legend(orient="bottom")),
         tooltip=["Team", "Gameweek", "Rank"],
     )
     .properties(width=chart_width, height=400)
