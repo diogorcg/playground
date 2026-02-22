@@ -29,8 +29,8 @@ def get_head_to_head_table(matches: pd.DataFrame, league_entries: pd.DataFrame) 
     id_to_name = dict(zip(league_entries["id"], league_entries["entry_name"]))
     team_names = list(league_entries["entry_name"])
 
-    # h2h[team_a][team_b] = [wins_of_a_vs_b, losses_of_a_vs_b]
-    h2h = {name: {other: [0, 0] for other in team_names} for name in team_names}
+    # h2h[team_a][team_b] = [wins, draws, losses] of team_a vs team_b
+    h2h = {name: {other: [0, 0, 0] for other in team_names} for name in team_names}
 
     finished = matches[matches["finished"].astype(bool)]
 
@@ -45,21 +45,24 @@ def get_head_to_head_table(matches: pd.DataFrame, league_entries: pd.DataFrame) 
 
         if p1 > p2:
             h2h[t1][t2][0] += 1
-            h2h[t2][t1][1] += 1
+            h2h[t2][t1][2] += 1
         elif p2 > p1:
             h2h[t2][t1][0] += 1
+            h2h[t1][t2][2] += 1
+        else:
             h2h[t1][t2][1] += 1
-        # draws are not counted in W-L cells
+            h2h[t2][t1][1] += 1
 
     def get_stats(team):
         wins = sum(h2h[team][opp][0] for opp in team_names if opp != team)
-        losses = sum(h2h[team][opp][1] for opp in team_names if opp != team)
-        total = wins + losses
+        draws = sum(h2h[team][opp][1] for opp in team_names if opp != team)
+        losses = sum(h2h[team][opp][2] for opp in team_names if opp != team)
+        total = wins + draws + losses
         pct = (wins / total * 100) if total > 0 else 0.0
-        return wins, losses, pct
+        return wins, draws, losses, pct
 
     stats = {team: get_stats(team) for team in team_names}
-    sorted_teams = sorted(team_names, key=lambda t: stats[t][2], reverse=True)
+    sorted_teams = sorted(team_names, key=lambda t: stats[t][3], reverse=True)
 
     data = []
     for team in sorted_teams:
@@ -68,11 +71,12 @@ def get_head_to_head_table(matches: pd.DataFrame, league_entries: pd.DataFrame) 
             if team == opp:
                 row[opp] = None
             else:
-                w, l = h2h[team][opp]
-                row[opp] = f"{w}-{l}"
-        wins, losses, pct = stats[team]
-        row["Wins"] = wins
-        row["Losses"] = losses
+                w, d, l = h2h[team][opp]
+                row[opp] = f"{w}-{d}-{l}"
+        wins, draws, losses, pct = stats[team]
+        row["W"] = wins
+        row["D"] = draws
+        row["L"] = losses
         row["%"] = f"{pct:.1f}%"
         data.append(row)
 

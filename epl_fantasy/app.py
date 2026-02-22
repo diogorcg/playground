@@ -68,7 +68,7 @@ st.markdown(table_css + standings_html, unsafe_allow_html=True)
 # Head to Head table
 st.markdown("<h3 style='text-align: center;'>Head to Head</h3>", unsafe_allow_html=True)
 
-team_cols = [c for c in h2h_df.columns if c not in ["Player", "Wins", "Losses", "%"]]
+team_cols = [c for c in h2h_df.columns if c not in ["Player", "W", "D", "L", "%"]]
 
 h2h_html_rows = ""
 for _, row in h2h_df.iterrows():
