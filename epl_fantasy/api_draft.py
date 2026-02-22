@@ -30,5 +30,21 @@ def get_league_standings():
 
     return standings, last_gamweek_processed
 
+def get_matches_and_entries():
+    league_info = requests.get(
+        "https://draft.premierleague.com/api/league/131855/details"
+    ).json()
+
+    league_entries = pd.DataFrame(league_info["league_entries"])
+    league_entries["manager_name"] = (
+        league_entries["player_first_name"]
+        + " "
+        + league_entries["player_last_name"]
+    )
+    matches = pd.DataFrame(league_info["matches"])
+
+    return matches, league_entries
+
+
 if __name__ == '__main__':
     get_league_standings()
